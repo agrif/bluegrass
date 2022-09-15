@@ -1,0 +1,1 @@
+Models under local-models are from SnapEDA, under CC-BY-SA.

@@ -6,7 +6,7 @@
 
   (title_block
     (title "STM32 with Battery")
-    (date "2022-09-14")
+    (date "2022-09-15")
     (rev "1")
     (company "#overviewer")
     (comment 1 "STM32 Development Board")

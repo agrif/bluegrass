@@ -6,7 +6,7 @@
 
   (title_block
     (title "STM32 with Battery")
-    (date "2022-09-14")
+    (date "2022-09-15")
     (rev "1")
     (company "#overviewer")
     (comment 1 "STM32 Development Board")
@@ -5304,7 +5304,7 @@
   (symbol (lib_id "power:+5V") (at 167.005 107.315 0) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid 190217de-4be9-44ed-a8b6-135baf08b345)
-    (property "Reference" "#PWR?" (id 0) (at 167.005 111.125 0)
+    (property "Reference" "#PWR0109" (id 0) (at 167.005 111.125 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "+5V" (id 1) (at 167.005 103.7105 0))
@@ -6101,7 +6101,7 @@
   (symbol (lib_id "power:GND") (at 201.295 109.855 0) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid 89b8ede2-d22e-43ed-9eac-3e42c2ff1639)
-    (property "Reference" "#PWR?" (id 0) (at 201.295 116.205 0)
+    (property "Reference" "#PWR0108" (id 0) (at 201.295 116.205 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (id 1) (at 201.295 114.4175 0))
@@ -6309,7 +6309,7 @@
   (symbol (lib_id "power:GND") (at 252.095 59.055 0) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid 9b332c85-170d-4ab6-94d9-558d2656d3b7)
-    (property "Reference" "#PWR?" (id 0) (at 252.095 65.405 0)
+    (property "Reference" "#PWR0110" (id 0) (at 252.095 65.405 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (id 1) (at 252.095 63.6175 0))
@@ -6671,7 +6671,7 @@
   (symbol (lib_id "power:VDC") (at 195.58 53.975 0) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid c6a19531-e26c-4cf4-9361-633e73268063)
-    (property "Reference" "#PWR?" (id 0) (at 195.58 56.515 0)
+    (property "Reference" "#PWR0107" (id 0) (at 195.58 56.515 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "VDC" (id 1) (at 195.58 50.3705 0))
@@ -6819,7 +6819,7 @@
   (symbol (lib_id "power:+BATT") (at 221.615 53.975 0) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid d5cce5e8-2fa1-4577-ab52-3ebf3677fabe)
-    (property "Reference" "#PWR?" (id 0) (at 221.615 57.785 0)
+    (property "Reference" "#PWR0106" (id 0) (at 221.615 57.785 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "+BATT" (id 1) (at 221.615 50.3705 0))
@@ -7697,20 +7697,20 @@
     (path "/bb5d9d7c-5fc8-406d-b388-799c58955978"
       (reference "#PWR0105") (unit 1) (value "+3.3V") (footprint "")
     )
-    (path "/190217de-4be9-44ed-a8b6-135baf08b345"
-      (reference "#PWR?") (unit 1) (value "+5V") (footprint "")
-    )
-    (path "/89b8ede2-d22e-43ed-9eac-3e42c2ff1639"
-      (reference "#PWR?") (unit 1) (value "GND") (footprint "")
-    )
-    (path "/9b332c85-170d-4ab6-94d9-558d2656d3b7"
-      (reference "#PWR?") (unit 1) (value "GND") (footprint "")
+    (path "/d5cce5e8-2fa1-4577-ab52-3ebf3677fabe"
+      (reference "#PWR0106") (unit 1) (value "+BATT") (footprint "")
     )
     (path "/c6a19531-e26c-4cf4-9361-633e73268063"
-      (reference "#PWR?") (unit 1) (value "VDC") (footprint "")
+      (reference "#PWR0107") (unit 1) (value "VDC") (footprint "")
     )
-    (path "/d5cce5e8-2fa1-4577-ab52-3ebf3677fabe"
-      (reference "#PWR?") (unit 1) (value "+BATT") (footprint "")
+    (path "/89b8ede2-d22e-43ed-9eac-3e42c2ff1639"
+      (reference "#PWR0108") (unit 1) (value "GND") (footprint "")
+    )
+    (path "/190217de-4be9-44ed-a8b6-135baf08b345"
+      (reference "#PWR0109") (unit 1) (value "+5V") (footprint "")
+    )
+    (path "/9b332c85-170d-4ab6-94d9-558d2656d3b7"
+      (reference "#PWR0110") (unit 1) (value "GND") (footprint "")
     )
     (path "/d3066c97-dfcb-4aac-8c44-5e29d193c4a4"
       (reference "C1") (unit 1) (value "10nF") (footprint "Capacitor_SMD:C_0805_2012Metric")

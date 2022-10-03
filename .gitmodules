@@ -1,0 +1,4 @@
+[submodule "bootloader"]
+	path = bootloader
+	url = https://github.com/agrif/STM32duino-bootloader
+	branch = bluegrass

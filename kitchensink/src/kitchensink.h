@@ -5,6 +5,7 @@
 #include <Adafruit_MAX1704X.h>
 #include <SdFat.h>
 
+#define BLUEGRASS_URL "https://github.com/agrif/bluegrass"
 #define INTERACT_BUFFER_LEN 256
 #define TERMINAL_WIDTH 80
 

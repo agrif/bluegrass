@@ -126,6 +126,7 @@ void Interact::loop() {
 
 void Interact::banner() {
     Serial.println("Bluegrass Kitchen Sink");
+    Serial.println("[ " BLUEGRASS_URL " ]");
     Serial.println("Run `help` to list commands.");
 }
 

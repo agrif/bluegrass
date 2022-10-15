@@ -44,7 +44,7 @@ public:
 
 Interact::Interact(Interactable** interactables, size_t n) :
     interactables(interactables), n_interactables(n),
-    connected(false), buffer_end(0)
+    connected(false), buffer_end(0), last_char_carriage_return(false)
 {}
 
 void Interact::setup() {
@@ -87,6 +87,14 @@ void Interact::loop() {
         // read new data into buffer
         char c = Serial.read();
 
+        // if the last char was '\r', ignore any '\n'
+        if (last_char_carriage_return) {
+            last_char_carriage_return = false;
+            if (c == '\n') {
+                continue;
+            }
+        }
+
         // echo
         Serial.write(c);
 
@@ -99,12 +107,11 @@ void Interact::loop() {
                 Serial.write('\b');
             }
             break;
+        case '\r': // carriage return
+            last_char_carriage_return = true;
+            Serial.write('\n');
         case '\n': // newline
             buffer[buffer_end] = 0;
-            if (buffer_end > 0 && buffer[buffer_end - 1] == '\r') {
-                buffer[buffer_end - 1] = 0;
-                buffer_end--;
-            }
             handle();
             buffer_end = 0;
             prompt();

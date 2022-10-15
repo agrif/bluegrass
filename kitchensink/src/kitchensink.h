@@ -77,6 +77,7 @@ class Interact {
     bool connected;
     char buffer[INTERACT_BUFFER_LEN];
     int buffer_end;
+    bool last_char_carriage_return;
 
 public:
     Interact(Interactable** interactables, size_t n);

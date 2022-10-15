@@ -7,7 +7,8 @@ const char* Vbus::name() {
 }
 
 void Vbus::setup() {
-    pinMode(PVBUS, INPUT);
+    // must be pull down, if pull up, it never goes down
+    pinMode(PVBUS, INPUT_PULLDOWN);
 }
 
 void Vbus::match(Matcher& m) {

@@ -104,22 +104,22 @@ void Sd::match(Matcher& m) {
             break;
         }
         int16_t sdver = scr.sdSpecVer();
-        Serial.printf("Specification Version: %d.%02d\n", sdver / 100, sdver % 100);
-        Serial.printf("Manufacturer ID: 0x%02x\n", cid.mid);
-        Serial.printf("OEM ID: 0x%02x 0x%02x\n", cid.oid[0], cid.oid[1]);
+        Serial.printf("Specification Version: %d.%02d\r\n", sdver / 100, sdver % 100);
+        Serial.printf("Manufacturer ID: 0x%02x\r\n", cid.mid);
+        Serial.printf("OEM ID: 0x%02x 0x%02x\r\n", cid.oid[0], cid.oid[1]);
         Serial.print("Product: ");
         for (int i = 0; i < 5; i++) {
             Serial.write(cid.pnm[i]);
         }
         Serial.println();
-        Serial.printf("Revision: %d.%d\n", cid.prvN(), cid.prvM());
-        Serial.printf("Serial Number: 0x%08x\n", cid.psn());
-        Serial.printf("Manufacturing Date: %d/%d\n", cid.mdtMonth(), cid.mdtYear());
-        Serial.printf("Card Size: %d kiB\n", csd.capacity() / 2);
-        Serial.printf("Flash Erase Size: %d blocks\n", csd.eraseSize());
-        Serial.printf("Erase Single Block: %s\n", csd.eraseSingleBlock() ? "true" : "false");
-        Serial.printf("Data After Erase: %s\n", scr.dataAfterErase() ? "ones" : "zeros");
-        Serial.printf("OCR: 0x%08x\n", ocr);
+        Serial.printf("Revision: %d.%d\r\n", cid.prvN(), cid.prvM());
+        Serial.printf("Serial Number: 0x%08x\r\n", cid.psn());
+        Serial.printf("Manufacturing Date: %d/%d\r\n", cid.mdtMonth(), cid.mdtYear());
+        Serial.printf("Card Size: %d kiB\r\n", csd.capacity() / 2);
+        Serial.printf("Flash Erase Size: %d blocks\r\n", csd.eraseSize());
+        Serial.printf("Erase Single Block: %s\r\n", csd.eraseSingleBlock() ? "true" : "false");
+        Serial.printf("Data After Erase: %s\r\n", scr.dataAfterErase() ? "ones" : "zeros");
+        Serial.printf("OCR: 0x%08x\r\n", ocr);
 
         Serial.println();
 
@@ -143,9 +143,9 @@ void Sd::match(Matcher& m) {
             Serial.println("Unknown");
             break;
         }
-        Serial.printf("Clusters: %d\n", fs.clusterCount());
-        Serial.printf("Cluster Size: %d bytes\n", fs.bytesPerCluster());
-        Serial.printf("Volume Size: %d kiB\n",
+        Serial.printf("Clusters: %d\r\n", fs.clusterCount());
+        Serial.printf("Cluster Size: %d bytes\r\n", fs.bytesPerCluster());
+        Serial.printf("Volume Size: %d kiB\r\n",
                       fs.clusterCount() * (fs.bytesPerCluster() / 1024));
     }
 

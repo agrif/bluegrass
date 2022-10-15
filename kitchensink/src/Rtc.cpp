@@ -15,13 +15,13 @@ void Rtc::setup() {
 
 void Rtc::match(Matcher& m) {
     if (m.match("read the RTC", "rtc get")) {
-        Serial.printf("%02d/%02d/%02d %02d:%02d:%02d\n",
+        Serial.printf("%02d/%02d/%02d %02d:%02d:%02d\r\n",
                       rtc.getYear() + YEAR_OFFSET, rtc.getMonth(), rtc.getDay(),
                       rtc.getHours(), rtc.getMinutes(), rtc.getSeconds());
     }
 
     if (m.match("read the RTC as unix time", "rtc get epoch")) {
-        Serial.printf("%d\n", rtc.getEpoch());
+        Serial.println(rtc.getEpoch());
     }
 
     if (m.match("get the weekday", "rtc get weekday")) {

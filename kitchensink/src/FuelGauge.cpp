@@ -34,8 +34,8 @@ void FuelGauge::match(Matcher& m) {
             return;
         }
 
-        Serial.printf("IC Version: %d\n", fuel.getICversion());
-        Serial.printf("ID: %d\n", fuel.getChipID());
+        Serial.printf("IC Version: %d\r\n", fuel.getICversion());
+        Serial.printf("ID: %d\r\n", fuel.getChipID());
     }
 
     if (m.match("get the fuel state", "fuel get")) {

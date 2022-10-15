@@ -17,7 +17,7 @@ void Test::print_end(const char* label) {
     for (; spaces > 0; spaces--) {
         Serial.write(' ');
     }
-    Serial.printf("[%s]\n", label);
+    Serial.printf("[%s]\r\n", label);
 }
 
 Test::~Test() {

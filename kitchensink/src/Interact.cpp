@@ -163,9 +163,9 @@ void Interact::test() {
 
     Serial.println();
     if (failed == 0) {
-        Serial.printf("All %d tests succeeded.\n", tested);
+        Serial.printf("All %d tests succeeded.\r\n", tested);
     } else {
-        Serial.printf("%d/%d tests failed, see log above.\n", failed, tested);
+        Serial.printf("%d/%d tests failed, see log above.\r\n", failed, tested);
     }
 }
 

@@ -94,6 +94,12 @@ private:
     void match(Matcher& m);
 };
 
+class CoreMark : public Interactable {
+public:
+    const char* name();
+    void match(Matcher& m);
+};
+
 class Led : public Interactable {
     uint32_t pin;
 public:

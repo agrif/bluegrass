@@ -2,3 +2,6 @@
 	path = bootloader
 	url = https://github.com/agrif/STM32duino-bootloader
 	branch = bluegrass
+[submodule "kitchensink/src/coremark"]
+	path = kitchensink/src/coremark
+	url = https://github.com/eembc/coremark.git

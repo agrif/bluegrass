@@ -2,6 +2,7 @@
 
 TwoWire i2c2(PB11, PB10);
 
+CoreMark coremark;
 Led led(LED_BUILTIN);
 Vbus vbus;
 Rtc rtc;
@@ -10,6 +11,7 @@ I2CBus i2cbus(i2c2);
 Sd sd;
 
 Interactable* interactables[] = {
+    &coremark,
     &led,
     &vbus,
     &rtc,

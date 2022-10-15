@@ -68,6 +68,7 @@ void Interact::loop() {
     if (!connected) {
         connected = true;
         buffer_end = 0;
+        delay(500);
         banner();
         prompt();
     }

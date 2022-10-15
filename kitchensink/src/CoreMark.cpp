@@ -58,9 +58,10 @@ void CoreMark::match(Matcher& m) {
         Serial.println("CoreMark measures how quickly your processor can manage linked");
         Serial.println("lists, do matrix multiplication, and execute state machine code.");
         Serial.println();
-        Serial.println("Iterations/Sec is the main benchmark result; higher numbers are better");
-        Serial.println("Running (usually requires 12 to 20 seconds) ...");
+        Serial.println("Iterations/Sec is the main benchmark result; higher numbers are better.");
+        Serial.println("This usually requires 12 to 20 seconds...");
         Serial.println();
+
         coremark_main();
     }
 }

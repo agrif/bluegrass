@@ -145,6 +145,14 @@ public:
     void test(Tester& t);
 };
 
+class AnalogInput : public Interactable {
+public:
+    const char* name();
+    void setup();
+    void match(Matcher& m);
+    void test(Tester& t);
+};
+
 class I2CBus : public Interactable {
 private:
     TwoWire& i2c2;

@@ -10,6 +10,8 @@ const char* Rtc::name() {
 
 void Rtc::setup() {
     rtc.setClockSource(STM32RTC::LSE_CLOCK);
+    // this will hang if the LSE crystal is broken in some way
+    // switch to LSI if that happens
     rtc.begin();
 }
 

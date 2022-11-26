@@ -17,6 +17,8 @@ Original Author: Shay Gal-on
 
 modified for arduino by
 https://github.com/PaulStoffregen/CoreMark
+
+modified further for bluegrass by agrif
 */
 #include "coremark.h"
 #include "core_portme.h"
@@ -129,7 +131,7 @@ void portable_init(core_portable *p, int *argc, char *argv[])
 /* Function : portable_fini
 	Target specific final code 
 */
-void portable_fini(core_portable *p)
+void portable_fini_real(core_portable *p)
 {
 	p->portable_id=0;
 }

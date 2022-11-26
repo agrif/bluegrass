@@ -100,6 +100,7 @@ class CoreMark : public Interactable {
 public:
     const char* name();
     void match(Matcher& m);
+    void test(Tester& t);
 };
 
 class Led : public Interactable {

@@ -1,10 +1,19 @@
 #include "kitchensink.h"
 
-extern "C" int coremark_main(void);
+#define EXPECTED_SCORE 122.29
+
+extern "C" float coremark_main(void);
+
+extern "C" float bluegrass_coremark_result = 0.0;
+static bool coremark_quiet = false;
 
 // https://github.com/PaulStoffregen/CoreMark
 extern "C" int ee_printf(const char *format, ...)
 {
+    if (coremark_quiet) {
+        return 1;
+    }
+
     va_list args;
     va_start(args, format);
 	for (; *format; format++) {
@@ -63,5 +72,18 @@ void CoreMark::match(Matcher& m) {
         Serial.println();
 
         coremark_main();
+    }
+}
+
+void CoreMark::test(Tester& t) {
+    DO_TEST(t, "benchmark") {
+        coremark_quiet = true;
+        coremark_main();
+        coremark_quiet = false;
+
+        float score = bluegrass_coremark_result;
+        if (abs(score - EXPECTED_SCORE) >= 0.1 * EXPECTED_SCORE) {
+            break;
+        }
     }
 }

@@ -4,6 +4,19 @@
 // a minor hack to rename the main function, so we can call it from C++
 #define main(ignore) coremark_main(void)
 
+// a much less minor hack to redirect portable_fini into returning a value
+extern float bluegrass_coremark_result;
+#define portable_fini(arg) do {                                         \
+    portable_fini_real(arg);                                            \
+    if (total_errors > 0) {                                             \
+        bluegrass_coremark_result = 0.0;                                \
+    } else {                                                            \
+        bluegrass_coremark_result =                                     \
+            default_num_contexts * results[0].iterations                \
+            / time_in_secs(total_time);                                 \
+    }                                                                   \
+    } while(0)
+
 #define FLAGS_STR "(flags unknown)"
 
 #define PERFORMANCE_RUN 1
@@ -30,6 +43,8 @@ Original Author: Shay Gal-on
 
 modified for arduino by
 https://github.com/PaulStoffregen/CoreMark
+
+modified further for bluegrass by agrif
 */
 /* Topic : Description
 	This file contains configuration constants required to execute on different platforms
@@ -198,7 +213,7 @@ typedef struct CORE_PORTABLE_S {
 
 /* target specific init/fini */
 void portable_init(core_portable *p, int *argc, char *argv[]);
-void portable_fini(core_portable *p);
+void portable_fini_real(core_portable *p);
 
 #if !defined(PROFILE_RUN) && !defined(PERFORMANCE_RUN) && !defined(VALIDATION_RUN)
 #if (TOTAL_DATA_SIZE==1200)

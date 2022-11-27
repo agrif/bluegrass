@@ -1,4 +1,5 @@
-#include "kitchensink.h"
+#include <Arduino.h>
+#include "Interact.h"
 
 Tester::Tester(const char* category, unsigned int& tested, unsigned int& failed) : category(category), tested(tested), failed(failed) {}
 

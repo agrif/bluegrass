@@ -1,4 +1,5 @@
-#include "kitchensink.h"
+#include <Arduino.h>
+#include "Interact.h"
 
 const char* Interactable::name() {
     return "!! UNNAMED !!";

@@ -95,30 +95,33 @@ void Interact::loop() {
             }
         }
 
-        // echo
-        Serial.write(c);
-
         switch (c) {
         case '\b': // backspace
             if (buffer_end > 0) {
                 buffer_end--;
-                // erase and backspace again
+                // backspace, erase and backspace again
+                Serial.write('\b');
                 Serial.write(' ');
                 Serial.write('\b');
             }
             break;
         case '\r': // carriage return
             last_char_carriage_return = true;
-            Serial.write('\n');
+            // intentional fall-through!
         case '\n': // newline
+            Serial.write('\n');
             buffer[buffer_end] = 0;
             handle();
             buffer_end = 0;
             prompt();
             break;
         default: // everything else
-            buffer[buffer_end] = c;
-            buffer_end++;
+            // only use it if it is printable
+            if (0x20 <= c && c < 0x7f) {
+                Serial.write(c);
+                buffer[buffer_end] = c;
+                buffer_end++;
+            }
             break;
         }
     }

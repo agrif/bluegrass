@@ -2,6 +2,8 @@
 
 #include "kitchensink.h"
 
+#define TESTSIZE (1 * 1024 * 1024 / INTERACT_BUFFER_LEN)
+
 // https://en.wikipedia.org/wiki/Xorshift#Example_implementation
 class PRNG {
     uint32_t a;
@@ -149,6 +151,58 @@ void Sd::match(Matcher& m) {
                       fs.clusterCount() * (fs.bytesPerCluster() / 1024));
     }
 
+    const char* filenamedat = "bluegrass.dat";
+    if (m.match("run a speed test", "sd speed <filename>", &filenamedat)) {
+        if (!ensure()) {
+            Serial.println("SD card or FAT volume not detected.");
+            return;
+        }
+
+        uint8_t buffer[INTERACT_BUFFER_LEN];
+
+        FsFile fw = fs.open(filenamedat, O_WRITE | O_CREAT | O_TRUNC);
+        if (!fw) {
+            Serial.println("Could not open file for writing.");
+            return;
+        }
+
+        PRNG rng;
+        rng.fill(buffer, INTERACT_BUFFER_LEN);
+
+        unsigned long write_start = millis();
+        for (size_t i = 0; i < TESTSIZE; i++) {
+            if (fw.write(buffer, INTERACT_BUFFER_LEN) != INTERACT_BUFFER_LEN) {
+                Serial.println("Could not write to file.");
+                return;
+            }
+        }
+        int write_time = millis() - write_start;
+        Serial.printf("Wrote %i bytes in %i ms, %f KiB/s.\r\n", TESTSIZE * INTERACT_BUFFER_LEN, write_time, 1000.0 * TESTSIZE * INTERACT_BUFFER_LEN / 1024 / write_time);
+        fw.close();
+
+        FsFile fr = fs.open(filenamedat);
+        if (!fr) {
+            Serial.println("Could not open file for reading.");
+            return;
+        }
+
+        unsigned long read_start = millis();
+        for (size_t i = 0; i < TESTSIZE; i++) {
+            if (fr.read(buffer, INTERACT_BUFFER_LEN) != INTERACT_BUFFER_LEN) {
+                Serial.println("Could not read from file.");
+                return;
+            }
+        }
+        int read_time = millis() - read_start;
+        Serial.printf("Read %i bytes in %i ms, %f KiB/s.\r\n", TESTSIZE * INTERACT_BUFFER_LEN, read_time, 1000.0 * TESTSIZE * INTERACT_BUFFER_LEN / 1024 / read_time);
+        fr.close();
+
+        if (!fs.remove(filenamedat)) {
+            Serial.println("Could not remove file.");
+            return;
+        }
+    }
+
     const char* path = "/";
     if (m.match("get card info", "sd ls <path>", &path)) {
         if (!ensure()) {
@@ -219,7 +273,6 @@ void Sd::test(Tester& t) {
     }
 
     uint8_t buffer[INTERACT_BUFFER_LEN];
-    size_t testsize = 1 * 1024 * 1024 / INTERACT_BUFFER_LEN;
     const char* filename = "/bluegrass-test-random.dat";
 
     DO_TEST(t, "write") {
@@ -229,14 +282,14 @@ void Sd::test(Tester& t) {
         }
         PRNG rng;
         size_t i;
-        for (i = 0; i < testsize; i++) {
+        for (i = 0; i < TESTSIZE; i++) {
             rng.fill(buffer, INTERACT_BUFFER_LEN);
             if (f.write(buffer, INTERACT_BUFFER_LEN) != INTERACT_BUFFER_LEN) {
                 break;
             }
         }
         f.close();
-        if (i != testsize) {
+        if (i != TESTSIZE) {
             break;
         }
     }
@@ -248,7 +301,7 @@ void Sd::test(Tester& t) {
         }
         PRNG rng;
         size_t i;
-        for (i = 0; i < testsize; i++) {
+        for (i = 0; i < TESTSIZE; i++) {
             if (f.read(buffer, INTERACT_BUFFER_LEN) != INTERACT_BUFFER_LEN) {
                 break;
             }
@@ -257,7 +310,7 @@ void Sd::test(Tester& t) {
             }
         }
         f.close();
-        if (i != testsize) {
+        if (i != TESTSIZE) {
             break;
         }
     }

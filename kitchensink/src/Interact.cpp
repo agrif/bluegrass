@@ -265,6 +265,7 @@ void Interact::loop() {
             buffer_end = buffer_cur;
             break;
         case '\b': // backspace
+        case 0x7f: // delete
             if (buffer_cur > 0) {
                 memmove(&buffer[buffer_cur - 1], &buffer[buffer_cur], buffer_end - buffer_cur);
                 buffer_end--;
@@ -285,6 +286,7 @@ void Interact::loop() {
             last_char_carriage_return = true;
             // intentional fall-through!
         case '\n': // newline
+            Serial.write('\r');
             Serial.write('\n');
             buffer[buffer_end] = 0;
             handle();

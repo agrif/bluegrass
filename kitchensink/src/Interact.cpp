@@ -44,12 +44,15 @@ public:
 
 Interact::Interact(Interactable** interactables, size_t n) :
     interactables(interactables), n_interactables(n),
-    connected(false), buffer_end(0), last_char_carriage_return(false)
+    connected(false), buffer_end(0), buffer_cur(0),
+    last_char_carriage_return(false),
+    in_escape(false), in_extended_escape(false)
 {}
 
 void Interact::setup() {
     connected = false;
     buffer_end = 0;
+    buffer_cur = 0;
 
     Serial.begin();
 
@@ -68,6 +71,7 @@ void Interact::loop() {
     if (!connected) {
         connected = true;
         buffer_end = 0;
+        buffer_cur = 0;
         delay(500);
         banner();
         prompt();
@@ -81,11 +85,63 @@ void Interact::loop() {
             Serial.println("ERROR: input buffer overflow!");
             prompt();
             buffer_end = 0;
+            buffer_cur = 0;
             continue;
         }
 
         // read new data into buffer
         char c = Serial.read();
+
+        if (in_escape) {
+            if (in_extended_escape) {
+                if (c < 0x40 || c >= 0x7f) {
+                    // parameter bytes, ignore
+                    continue;
+                }
+
+                // extended escape sequence end
+                in_escape = false;
+                in_extended_escape = false;
+                switch (c) {
+                case 'A':
+                    // cursor up
+                    break;
+                case 'B':
+                    // cursor down
+                    break;
+                case 'C':
+                    // cursor forward
+                    if (buffer_cur < buffer_end) {
+                        Serial.write(buffer[buffer_cur]);
+                        buffer_cur++;
+                    }
+                    break;
+                case 'D':
+                    // cursor back
+                    if (buffer_cur > 0) {
+                        Serial.write('\b');
+                        buffer_cur--;
+                    }
+                    break;
+                default:
+                    // just ignore anything unknown
+                    break;
+                }
+                continue;
+            } else {
+                // normal escape sequence
+                switch (c) {
+                case '[':
+                    in_extended_escape = true;
+                    break;
+                default:
+                    // some others can be multibyte but lets ignore them
+                    in_escape = false;
+                    break;
+                }
+                continue;
+            }
+        }
 
         // if the last char was '\r', ignore any '\n'
         if (last_char_carriage_return) {
@@ -96,14 +152,57 @@ void Interact::loop() {
         }
 
         switch (c) {
-        case '\b': // backspace
-            if (buffer_end > 0) {
-                buffer_end--;
-                // backspace, erase and backspace again
+        case 0x01:
+            // Ctrl-A, move to start of line
+            while (buffer_cur > 0) {
                 Serial.write('\b');
+                buffer_cur--;
+            }
+            break;
+        case 0x04:
+            // Ctrl-D, delete current position
+            if (buffer_cur < buffer_end) {
+                memmove(&buffer[buffer_cur], &buffer[buffer_cur + 1], buffer_end - buffer_cur - 1);
+                buffer_end--;
+                // output edited line then backspace back
+                Serial.write(&buffer[buffer_cur], buffer_end - buffer_cur);
                 Serial.write(' ');
+                for (int i = 0; i < buffer_end - buffer_cur + 1; i++) {
+                    Serial.write('\b');
+                }
+            }
+            break;
+        case 0x05:
+            // Ctrl-E, move to end of line
+            Serial.write(&buffer[buffer_cur], buffer_end - buffer_cur);
+            buffer_cur = buffer_end;
+            break;
+        case 0x0b:
+            // Ctrl-K, delete to end of line
+            for (int i = 0; i < buffer_end - buffer_cur; i++) {
+                Serial.write(' ');
+            }
+            for (int i = 0; i < buffer_end - buffer_cur; i++) {
                 Serial.write('\b');
             }
+            buffer_end = buffer_cur;
+            break;
+        case '\b': // backspace
+            if (buffer_cur > 0) {
+                memmove(&buffer[buffer_cur - 1], &buffer[buffer_cur], buffer_end - buffer_cur);
+                buffer_end--;
+                buffer_cur--;
+                // backspace, output edited line, then backspace back
+                Serial.write('\b');
+                Serial.write(&buffer[buffer_cur], buffer_end - buffer_cur);
+                Serial.write(' ');
+                for (int i = 0; i < buffer_end - buffer_cur + 1; i++) {
+                    Serial.write('\b');
+                }
+            }
+            break;
+        case '\e': // escape
+            in_escape = true;
             break;
         case '\r': // carriage return
             last_char_carriage_return = true;
@@ -113,14 +212,21 @@ void Interact::loop() {
             buffer[buffer_end] = 0;
             handle();
             buffer_end = 0;
+            buffer_cur = 0;
             prompt();
             break;
         default: // everything else
             // only use it if it is printable
             if (0x20 <= c && c < 0x7f) {
-                Serial.write(c);
-                buffer[buffer_end] = c;
+                memmove(&buffer[buffer_cur + 1], &buffer[buffer_cur], buffer_end - buffer_cur);
+                buffer[buffer_cur] = c;
                 buffer_end++;
+                buffer_cur++;
+                // write out new line and then backspace back
+                Serial.write(&buffer[buffer_cur - 1], buffer_end - buffer_cur + 1);
+                for (int i = 0; i < buffer_end - buffer_cur; i++) {
+                    Serial.write('\b');
+                }
             }
             break;
         }

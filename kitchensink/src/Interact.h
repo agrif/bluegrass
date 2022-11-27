@@ -2,7 +2,9 @@
 
 #include <stdlib.h>
 
+#define BLUEGRASS_NAME "Bluegrass"
 #define BLUEGRASS_URL "https://github.com/agrif/bluegrass"
+#define BLUEGRASS_REV "Rev. 1"
 #define INTERACT_BUFFER_LEN 256
 #define INTERACT_HISTORY 8
 #define TERMINAL_WIDTH 80
@@ -68,6 +70,8 @@ public:
     virtual void match(Matcher& m);
     virtual void test(Tester& t);
 };
+
+void id_number(char* dest, size_t size);
 
 class Interact {
     Interactable** interactables;

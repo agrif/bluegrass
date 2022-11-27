@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <ArduinoUniqueID.h>
 #include "Interact.h"
 
 const char* Interactable::name() {
@@ -42,6 +43,19 @@ public:
         return false;
     }
 };
+
+void id_number(char* dest, size_t size) {
+    size_t written = 0;
+    for (size_t i = 0; i < UniqueIDsize; i++) {
+        if (i > 0 && i % 3 == 0) {
+            written += snprintf(&dest[written], size - written, "-");
+        }
+        written += snprintf(&dest[written], size - written, "%02x", UniqueID[i]);
+        if (written >= size) {
+            break;
+        }
+    }
+}
 
 Interact::Interact(Interactable** interactables, size_t n) :
     interactables(interactables), n_interactables(n),
@@ -305,7 +319,11 @@ void Interact::loop() {
 }
 
 void Interact::banner() {
-    Serial.println("Bluegrass Kitchen Sink");
+    Serial.println(BLUEGRASS_NAME " (" BLUEGRASS_REV ") Kitchen Sink");
+    char buffer[32];
+    id_number(buffer, 32);
+    Serial.print("ID # ");
+    Serial.println(buffer);
     Serial.println("[ " BLUEGRASS_URL " ]");
     Serial.println("Run `help` to list commands.");
 }

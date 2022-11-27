@@ -44,13 +44,19 @@ public:
 
 Interact::Interact(Interactable** interactables, size_t n) :
     interactables(interactables), n_interactables(n),
-    connected(false), buffer_end(0), buffer_cur(0),
+    connected(false), history_entry(0), buffer_end(0), buffer_cur(0),
     last_char_carriage_return(false),
     in_escape(false), in_extended_escape(false)
-{}
+{
+    memset(history, 0, (INTERACT_HISTORY - 1) * INTERACT_BUFFER_LEN);
+    memset(history_buf, 0, INTERACT_HISTORY * INTERACT_BUFFER_LEN);
+    buffer = &history_buf[history_entry][0];
+}
 
 void Interact::setup() {
     connected = false;
+    history_entry = 0;
+    buffer = &history_buf[history_entry][0];
     buffer_end = 0;
     buffer_cur = 0;
 
@@ -70,6 +76,9 @@ void Interact::loop() {
     // we are definitely connected. is it newly connected?
     if (!connected) {
         connected = true;
+        memcpy(&history_buf[1][0], &history[0][0], (INTERACT_HISTORY - 1) * INTERACT_BUFFER_LEN);
+        history_entry = 0;
+        buffer = &history_buf[history_entry][0];
         buffer_end = 0;
         buffer_cur = 0;
         delay(500);
@@ -84,6 +93,9 @@ void Interact::loop() {
             Serial.println();
             Serial.println("ERROR: input buffer overflow!");
             prompt();
+            memcpy(&history_buf[1][0], &history[0][0], (INTERACT_HISTORY - 1) * INTERACT_BUFFER_LEN);
+            history_entry = 0;
+            buffer = &history_buf[history_entry][0];
             buffer_end = 0;
             buffer_cur = 0;
             continue;
@@ -105,9 +117,59 @@ void Interact::loop() {
                 switch (c) {
                 case 'A':
                     // cursor up
+                    if (history_entry + 1 < INTERACT_HISTORY && history_buf[history_entry + 1][0] != 0) {
+                        // cap current line
+                        buffer[buffer_end] = 0;
+
+                        // erase line
+                        while (buffer_cur > 0) {
+                            Serial.write('\b');
+                            buffer_cur--;
+                        }
+                        while (buffer_cur < buffer_end) {
+                            Serial.write(' ');
+                            buffer_cur++;
+                        }
+                        while (buffer_cur > 0) {
+                            Serial.write('\b');
+                            buffer_cur--;
+                        }
+
+                        // switch to new entry
+                        history_entry++;
+                        buffer = &history_buf[history_entry][0];
+                        buffer_end = strlen(buffer);
+                        buffer_cur = buffer_end;
+                        Serial.write(buffer, buffer_end);
+                    }
                     break;
                 case 'B':
                     // cursor down
+                    if (history_entry > 0) {
+                        // cap current line
+                        buffer[buffer_end] = 0;
+
+                        // erase line
+                        while (buffer_cur > 0) {
+                            Serial.write('\b');
+                            buffer_cur--;
+                        }
+                        while (buffer_cur < buffer_end) {
+                            Serial.write(' ');
+                            buffer_cur++;
+                        }
+                        while (buffer_cur > 0) {
+                            Serial.write('\b');
+                            buffer_cur--;
+                        }
+
+                        // switch to new entry
+                        history_entry--;
+                        buffer = &history_buf[history_entry][0];
+                        buffer_end = strlen(buffer);
+                        buffer_cur = buffer_end;
+                        Serial.write(buffer, buffer_end);
+                    }
                     break;
                 case 'C':
                     // cursor forward
@@ -211,6 +273,14 @@ void Interact::loop() {
             Serial.write('\n');
             buffer[buffer_end] = 0;
             handle();
+
+            if (buffer[0] != 0) {
+                memmove(&history[1][0], &history[0][0], (INTERACT_HISTORY - 2) * INTERACT_BUFFER_LEN);
+                memcpy(&history[0][0], buffer, INTERACT_BUFFER_LEN);
+            }
+            memcpy(&history_buf[1][0], &history[0][0], (INTERACT_HISTORY - 1) * INTERACT_BUFFER_LEN);
+            history_entry = 0;
+            buffer = &history_buf[history_entry][0];
             buffer_end = 0;
             buffer_cur = 0;
             prompt();

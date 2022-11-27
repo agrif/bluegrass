@@ -7,6 +7,7 @@
 
 #define BLUEGRASS_URL "https://github.com/agrif/bluegrass"
 #define INTERACT_BUFFER_LEN 256
+#define INTERACT_HISTORY 8
 #define TERMINAL_WIDTH 80
 
 class Matcher {
@@ -76,7 +77,10 @@ class Interact {
     size_t n_interactables;
 
     bool connected;
-    char buffer[INTERACT_BUFFER_LEN];
+    char history[INTERACT_HISTORY - 1][INTERACT_BUFFER_LEN];
+    char history_buf[INTERACT_HISTORY][INTERACT_BUFFER_LEN];
+    int history_entry;
+    char* buffer;
     int buffer_end;
     int buffer_cur;
     bool last_char_carriage_return;

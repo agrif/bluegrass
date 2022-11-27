@@ -263,6 +263,22 @@ void Sd::match(Matcher& m) {
             Serial.println("Could not remove file.");
         }
     }
+
+    const char* filenamebmp = "bluegrass.bmp";
+    if (m.match("draw a BMP image", "sd draw <filename>", &filenamebmp)) {
+        if (!ensure()) {
+            Serial.println("SD card or FAT volume not detected.");
+            return;
+        }
+
+        FsFile f = fs.open(filenamebmp, O_WRITE | O_CREAT | O_TRUNC);
+        if (!f) {
+            Serial.println("Could not open file.");
+            return;
+        }
+        draw_bmp(f);
+        f.close();
+    }
 }
 
 void Sd::test(Tester& t) {

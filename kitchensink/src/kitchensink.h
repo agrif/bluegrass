@@ -87,3 +87,5 @@ public:
     void match(Matcher& m);
     void test(Tester& t);
 };
+
+void draw_bmp(FsFile& file);

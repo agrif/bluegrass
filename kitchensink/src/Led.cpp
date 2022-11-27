@@ -1,4 +1,18 @@
 #include "kitchensink.h"
+#include <Morse.h>
+
+static void send_morse(uint32_t pin, const char* message) {
+    Morse morse(0, 15);
+    morse.send(message);
+
+    while (morse.busy) {
+        morse.update();
+        digitalWrite(pin, morse.tx ? LOW : HIGH);
+        delay(1);
+    }
+
+    digitalWrite(pin, HIGH);
+}
 
 Led::Led(uint32_t pin) : pin(pin) {}
 
@@ -27,6 +41,11 @@ void Led::match(Matcher& m) {
             digitalWrite(pin, HIGH);
             delay(100);
         }
+    }
+
+    const char* message = "bluegrass";
+    if (m.match("send a Morse code message", "led morse <message>", &message)) {
+        send_morse(pin, message);
     }
 }
 
@@ -60,6 +79,13 @@ void Led::test(Tester& t) {
             if (digitalRead(pin) != HIGH) {
                 break;
             }
+        }
+    }
+
+    DO_TEST(t, "morse") {
+        send_morse(pin, "bluegrass");
+        if (digitalRead(pin) != HIGH) {
+            break;
         }
     }
 }

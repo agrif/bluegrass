@@ -1,4 +1,5 @@
 #include "kitchensink.h"
+#include <STM32LowPower.h>
 
 #define YEAR_OFFSET 2000
 
@@ -13,6 +14,8 @@ void Rtc::setup() {
     // this will hang if the LSE crystal is broken in some way
     // switch to LSI if that happens
     rtc.begin();
+
+    LowPower.begin();
 }
 
 void Rtc::match(Matcher& m) {
@@ -76,6 +79,24 @@ void Rtc::match(Matcher& m) {
     if (m.match("set the RTC time as unix time", "rtc set epoch <int:epoch>", &epoch)) {
         rtc.setEpoch(epoch, 0);
     }
+
+    int duration = 0;
+
+    if (m.match("enter idle power mode", "rtc idle <int:ms>", &duration)) {
+        LowPower.idle(duration);
+    }
+
+    if (m.match("enter sleep power mode", "rtc sleep <int:ms>", &duration)) {
+        LowPower.sleep(duration);
+    }
+
+    if (m.match("enter deep sleep power mode", "rtc deepsleep <int:ms>", &duration)) {
+        LowPower.deepSleep(duration);
+    }
+
+    if (m.match("enter shutdown mode", "rtc shutdown <int:ms>", &duration)) {
+        LowPower.shutdown(duration);
+    }
 }
 
 void Rtc::test(Tester& t) {
@@ -119,6 +140,17 @@ void Rtc::test(Tester& t) {
             break;
         }
         if (day != 4 || month != 5 || year != 6) {
+            break;
+        }
+    }
+
+    DO_TEST(t, "deep sleep") {
+        uint16_t wait = 10;
+        uint16_t margin = 1;
+        uint32_t a = rtc.getEpoch();
+        LowPower.deepSleep(wait * 1000);
+        uint32_t b = rtc.getEpoch();
+        if (b > a + wait + margin || b < a + wait - margin) {
             break;
         }
     }

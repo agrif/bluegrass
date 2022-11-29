@@ -38,7 +38,7 @@ void FuelGauge::match(Matcher& m) {
         Serial.printf("ID: %d\r\n", fuel.getChipID());
     }
 
-    if (m.match("get the fuel state", "fuel get")) {
+    if (m.match("read the fuel state", "fuel read")) {
         if (!ensure()) {
             Serial.println("Battery not detected.");
             return;

@@ -7,6 +7,7 @@ Led led(LED_BUILTIN);
 Vbus vbus;
 Rtc rtc;
 FuelGauge fuel(i2c2);
+Gpio gpio;
 AnalogInput analoginput;
 I2CBus i2cbus(i2c2);
 Sd sd;
@@ -17,6 +18,7 @@ Interactable* interactables[] = {
     &vbus,
     &rtc,
     &fuel,
+    &gpio,
     &analoginput,
     &i2cbus,
     &sd,

@@ -42,40 +42,39 @@ const char* AnalogInput::name() {
 
 void AnalogInput::setup() {
     analogReadResolution(ADC_RESOLUTION);
-
-    for (int i = 0; i < NUM_ANALOG_INPUTS; i++) {
-        pinMode(PNUM_ANALOG_BASE + i, INPUT_ANALOG);
-    }
 }
 
 void AnalogInput::match(Matcher& m) {
-    if (m.match("read voltage reference", "read vdda")) {
+    if (m.match("read voltage reference", "analog read vdda")) {
         Serial.print(read_vdda());
         Serial.println(" mV");
     }
 
-    if (m.match("read internal temperature sensor", "read temp")) {
+    if (m.match("read internal temperature sensor", "analog read temp")) {
         Serial.print(read_temp_sensor(read_vdda()));
         Serial.println(" °C");
     }
 
-    int pin = 0;
-    if (m.match("read pin value", "read analog <int:pin>", &pin)) {
-        if (0 <= pin && pin < NUM_ANALOG_INPUTS) {
-            Serial.println(analogRead(PNUM_ANALOG_BASE + pin) / (float)ADC_RANGE);
-        } else {
-            Serial.println("bad analog input");
+    const char* name = "X";
+    uint32_t pin = 0;
+
+    if (m.match("read analog pin value", "analog read <pin>", &name)) {
+        if (!pin_lookup(name, &pin, true)) {
+            Serial.println("bad analog pin name");
+            return;
         }
+        pinMode(pin, INPUT_ANALOG);
+        Serial.println(analogRead(pin) / (float)ADC_RANGE);
     }
 
-    if (m.match("read pin voltage", "read voltage <int:pin>", &pin)) {
-        if (0 <= pin && pin < NUM_ANALOG_INPUTS) {
-            Serial.print(read_voltage(read_vdda(), PNUM_ANALOG_BASE + pin));
-            Serial.println(" mV");
-
-        } else {
-            Serial.println("bad analog input");
+    if (m.match("read analog pin voltage", "analog read voltage <pin>", &name)) {
+        if (!pin_lookup(name, &pin, true)) {
+            Serial.println("bad analog pin name");
+            return;
         }
+        pinMode(pin, INPUT_ANALOG);
+        Serial.print(read_voltage(read_vdda(), pin));
+        Serial.println(" mV");
     }
 }
 

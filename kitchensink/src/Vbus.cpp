@@ -12,17 +12,15 @@ void Vbus::setup() {
 }
 
 void Vbus::match(Matcher& m) {
-    if (m.match("read VBUS pin", "vbus get")) {
-        if (digitalRead(PVBUS)) {
-            Serial.println("VBUS is high.");
-        } else {
-            Serial.println("VBUS is low.");
-        }
+    if (m.match("read VBUS pin", "vbus read")) {
+        pinMode(PVBUS, INPUT_PULLDOWN);
+        Serial.println(digitalRead(PVBUS));
     }
 }
 
 void Vbus::test(Tester& t) {
     DO_TEST(t, "checking") {
+        pinMode(PVBUS, INPUT_PULLDOWN);
         if (digitalRead(PVBUS) == LOW) {
             // this cannot happen, if connected over usb
             break;

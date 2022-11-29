@@ -27,14 +27,17 @@ void Led::setup() {
 
 void Led::match(Matcher& m) {
     if (m.match("turn LED on", "led on")) {
+        pinMode(pin, OUTPUT);
         digitalWrite(pin, LOW);
     }
 
     if (m.match("turn LED off", "led off")) {
+        pinMode(pin, OUTPUT);
         digitalWrite(pin, HIGH);
     }
 
     if (m.match("blink LED", "led blink")) {
+        pinMode(pin, OUTPUT);
         for (int i = 0; i < 10; i++) {
             digitalWrite(pin, LOW);
             delay(100);
@@ -45,11 +48,14 @@ void Led::match(Matcher& m) {
 
     const char* message = "bluegrass";
     if (m.match("send a Morse code message", "led morse <message>", &message)) {
+        pinMode(pin, OUTPUT);
         send_morse(pin, message);
     }
 }
 
 void Led::test(Tester& t) {
+    pinMode(pin, OUTPUT);
+
     DO_TEST(t, "turn on") {
         digitalWrite(pin, LOW);
         delay(1000);

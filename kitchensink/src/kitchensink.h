@@ -57,6 +57,14 @@ public:
     void test(Tester& t);
 };
 
+uint32_t pin_lookup(const char* name, uint32_t* pin, bool analog_in = false);
+
+class Gpio : public Interactable {
+public:
+    const char* name();
+    void match(Matcher& m);
+};
+
 class AnalogInput : public Interactable {
 public:
     const char* name();

@@ -204,7 +204,7 @@ void draw_bmp(FsFile& file) {
 
     draw_text_outline(file, 20, 20 + 3 * tom_thumb.height * FONT_SCALE,
                       {255, 255, 255}, {0, 0, 0},
-                      BLUEGRASS_NAME " " BLUEGRASS_REV);
+                      BLUEGRASS_NAME " (" BLUEGRASS_REV ", " BLUEGRASS_GIT ")");
     draw_text_outline(file, 20, 20 + 2 * tom_thumb.height * FONT_SCALE,
                       {255, 255, 255}, {0, 0, 0},
                       buf);

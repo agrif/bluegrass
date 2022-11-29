@@ -4,7 +4,8 @@
 
 #define BLUEGRASS_NAME "Bluegrass"
 #define BLUEGRASS_URL "https://github.com/agrif/bluegrass"
-#define BLUEGRASS_REV "Rev. 1"
+// BLUEGRASS_REV defined in platformio.ini
+// BLUEGRASS_GIT defined in platformio.ini by git-revision.py
 #define INTERACT_BUFFER_LEN 256
 #define INTERACT_HISTORY 8
 #define TERMINAL_WIDTH 80

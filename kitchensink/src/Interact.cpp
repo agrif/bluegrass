@@ -321,7 +321,7 @@ void Interact::loop() {
 }
 
 void Interact::banner() {
-    Serial.println(BLUEGRASS_NAME " Kitchen Sink (" BLUEGRASS_REV ", " BLUEGRASS_GIT ")");
+    Serial.println(BLUEGRASS_NAME " Kitchen Sink (Rev. " STRINGIFY(BLUEGRASS_REV) ", " BLUEGRASS_GIT ")");
     char buffer[32];
     id_number(buffer, 32);
     Serial.print("ID # ");

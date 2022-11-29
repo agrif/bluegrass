@@ -10,6 +10,9 @@
 #define INTERACT_HISTORY 8
 #define TERMINAL_WIDTH 80
 
+#define STRINGIFY(s) __STRINGIFY_X(s)
+#define __STRINGIFY_X(s) #s
+
 class Matcher {
 public:
     virtual void section(const char* title);

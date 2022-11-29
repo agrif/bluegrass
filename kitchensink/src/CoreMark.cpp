@@ -1,6 +1,6 @@
 #include "kitchensink.h"
 
-#define EXPECTED_SCORE 87.77
+#define EXPECTED_SCORE 120.00
 
 static bool coremark_quiet = false;
 

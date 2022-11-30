@@ -320,14 +320,22 @@ void Interact::loop() {
     }
 }
 
-void Interact::banner() {
+void Interact::version() {
     Serial.println(BLUEGRASS_NAME " Kitchen Sink (Rev. " STRINGIFY(BLUEGRASS_REV) ", " BLUEGRASS_GIT ")");
     char buffer[32];
     id_number(buffer, 32);
     Serial.print("ID # ");
     Serial.println(buffer);
     Serial.println("[ " BLUEGRASS_URL " ]");
+}
+
+void Interact::help_hint() {
     Serial.println("Run `help` to list commands.");
+}
+
+void Interact::banner() {
+    version();
+    help_hint();
 }
 
 void Interact::prompt() {
@@ -336,7 +344,7 @@ void Interact::prompt() {
 
 void Interact::handle() {
     if (buffer_end == 0) {
-        banner();
+        help_hint();
         return;
     }
 
@@ -375,6 +383,10 @@ void Interact::match(Matcher& m) {
 
     if (m.match("show this help text", "help")) {
         help();
+    }
+
+    if (m.match("show version information", "version")) {
+        version();
     }
 
     if (m.match("run the built-in test", "test")) {

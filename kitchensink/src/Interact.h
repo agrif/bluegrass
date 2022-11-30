@@ -99,6 +99,8 @@ public:
     void loop();
 
 private:
+    void version();
+    void help_hint();
     void banner();
     void prompt();
     void handle();

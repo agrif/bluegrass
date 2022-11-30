@@ -36,7 +36,7 @@ static void send_morse_v(const char* fmt, va_list args) {
     while (morse.busy) {
         morse.update();
         digitalWrite(PC13, morse.tx ? LOW : HIGH);
-        LowPower.sleep(1);
+        delay(1);
     }
 
     digitalWrite(PC13, HIGH);
